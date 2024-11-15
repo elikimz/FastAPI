@@ -2,12 +2,30 @@ from random import randrange
 from fastapi import FastAPI
 from typing import Optional, Union
 from pydantic import BaseModel
+import psycopg2
+from  psycopg2.extras import RealDictCursor
+import time
 
 class Post(BaseModel):
     title: str
     content: str
     publish: bool=False
     rating:Optional[int]=None
+
+while True :
+         try:
+              conn=psycopg2.connect(host='localhost',database='FastAPI',user='postgres',password='40284433Bmw@'
+    ,cursor_factory=RealDictCursor)
+              cursor=conn.cursor()
+              print("Database Connected Successifully")
+              break
+         except Exception as error:
+          print("Database connection failed")
+          print("Error:",error)
+          time.sleep(2)
+
+
+
 
 from fastapi.params import Body
 my_post=[{"title":"post 1", "content":"my new post","id":1}, {"title":"post 2", "content":"my new post","id":2}]
@@ -19,7 +37,7 @@ def my_index_delete(id):
         return i
 
      return -1
-     
+ 
 
 
 
@@ -32,7 +50,10 @@ def read_root():
 
 @app.get("/posts")
 def read_posts():
-    return{"Data":my_post}
+    cursor.execute("""SELECT*FROM posts""")
+    posts=cursor.fetchall()
+    # print(posts)
+    return{"Data":posts}
 
 @app.post("/posts")
 def create_post(new_post:Post):
