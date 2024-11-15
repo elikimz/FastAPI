@@ -52,7 +52,7 @@ def read_root():
 def read_posts():
     cursor.execute("""SELECT*FROM posts""")
     posts=cursor.fetchall()
-    print(posts)
+    # print(posts)
     return{"Data":posts}
 
 @app.post("/posts")
