@@ -11,6 +11,7 @@ class Post(BaseModel):
     content: str
     publish: bool=False
     rating:Optional[int]=None
+    
 
 while True :
          try:
@@ -57,11 +58,16 @@ def read_posts():
 
 @app.post("/posts")
 def create_post(new_post:Post):
-    my_dict=new_post.dict()
-    my_dict["id"]=randrange(0,100)
-    my_post.append(my_dict)
-    print(my_dict)
-    return {"message":my_dict}
+    cursor.execute(
+        """INSERT INTO posts(title,content) values (%s,%s)RETURNING*""",
+    (new_post.title,new_post.content)
+    )
+    latest_post=cursor.fetchone()
+    conn.commit()
+    # print(latest_post)
+    return {"message":latest_post}
+
+
     
 @app.get("/posts/{id}")
 def get_posts(id:int):
