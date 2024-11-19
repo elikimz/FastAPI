@@ -1,6 +1,5 @@
 from tkinter.tix import STATUS
 from fastapi import HTTPException,Depends, Response
-from random import randrange
 from fastapi import FastAPI
 from typing import Optional, Union,List
 from pydantic import BaseModel
