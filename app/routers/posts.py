@@ -14,9 +14,12 @@ router=APIRouter(
 
 
 @router.post("",response_model=schema.Response)
-def create_post(new_post:schema.PostCreate,db:Session=Depends(get_db),user_id:int=Depends(auth2.get_current_user)):
-    # print(new_post.dict())
-    new_post=model.Post(**new_post.dict())
+def create_post(new_post:schema.PostCreate,
+                db:Session=Depends(get_db),
+                current_user:int=Depends(auth2.get_current_user)):
+    
+    new_post=model.Post(**new_post.dict(),user_id=current_user.id)
+   
     db.add(new_post)
     db.commit()
     db.refresh(new_post)

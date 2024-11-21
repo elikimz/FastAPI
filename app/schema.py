@@ -9,11 +9,13 @@ class PostBase(BaseModel):
          title: str
          content: str
          published: bool=True
+       
 
 class PostCreate(PostBase):
       pass
 
 class Response(PostBase):
+         user_id:int
          created_at:datetime.datetime
 
          class Config:

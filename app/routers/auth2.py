@@ -11,7 +11,7 @@ oauth2_scheme=OAuth2PasswordBearer(tokenUrl='login')
 
 SECRET_KEY="KIM"
 ALGORITHM="HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES=1
+ACCESS_TOKEN_EXPIRE_MINUTES=60
 
 def create_acess_token(data:dict):
   to_ecode=data.copy()
