@@ -27,7 +27,7 @@ def create_post(new_post:schema.PostCreate,
 
 
 @router.get("",response_model=list[schema.Response])
-def test_posts(db:Session=Depends(get_db),user_id:int=Depends(auth2.get_current_user)):
+def test_posts(db:Session=Depends(get_db),current_user:int=Depends(auth2.get_current_user)):
       posts=db.query(model.Post).all()
     
 
@@ -36,7 +36,7 @@ def test_posts(db:Session=Depends(get_db),user_id:int=Depends(auth2.get_current_
 
     
 @router.get("/{id}",response_model=schema.Response)
-def get_posts(id:int,db:Session=Depends(get_db),user_id:int=Depends(auth2.get_current_user)):
+def get_posts(id:int,db:Session=Depends(get_db),current_user:int=Depends(auth2.get_current_user)):
     posts=db.query(model.Post).filter(model.Post.id==id).first()
    
     if not posts:
@@ -46,13 +46,18 @@ def get_posts(id:int,db:Session=Depends(get_db),user_id:int=Depends(auth2.get_cu
 
 
 @router.delete("/{id}")
-def delete_post(id: int,db:Session=Depends(get_db),user_id:int=Depends(auth2.get_current_user)):  # Add `id` as a parameter to the function
-     post=db.query(model.Post).filter(model.Post.id==id)
+def delete_post(id: int,db:Session=Depends(get_db),current_user:int=Depends(auth2.get_current_user)):  # Add `id` as a parameter to the function
+     post_query=db.query(model.Post).filter(model.Post.id==id)
+     post=post_query.first()
+
      
 
-     if post.first()==None:
+     if post_query.first()==None:
          raise HTTPException(status_code=404,detail= f"post with id {id} is not found")
-     post.delete(synchronize_session=False)
+
+     if post.user_id!=current_user.id:
+            raise HTTPException(status_code=404,detail="unauthorised to perform such task!")
+     post_query.delete(synchronize_session=False)
      db.commit()
      return "deleted successifully"
         
@@ -60,11 +65,13 @@ def delete_post(id: int,db:Session=Depends(get_db),user_id:int=Depends(auth2.get
 
 
 @router.put("/{id}",response_model=schema.Response) 
-def update_post(id:int,updated_post_data:schema.PostBase,db:Session=Depends(get_db),user_id:int=Depends(auth2.get_current_user)):
+def update_post(id:int,updated_post_data:schema.PostBase,db:Session=Depends(get_db),current_user:int=Depends(auth2.get_current_user)):
     updated_post=db.query(model.Post).filter(model.Post.id==id)
     updated=updated_post.first()
     if updated==None:
          raise HTTPException(status_code=404,detail= f"post with id {id} is not found")
+    if updated.user_id!=current_user.id:
+            raise HTTPException(status_code=404,detail="unauthorised to perform such task!")
     updated_post.update(updated_post_data.dict(),synchronize_session=False)
     db.commit()
 
