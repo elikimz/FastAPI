@@ -60,7 +60,7 @@ def delete_post(id: int,db:Session=Depends(get_db),current_user:int=Depends(auth
      post_query.delete(synchronize_session=False)
      db.commit()
      return "deleted successifully"
-     return "deleted successifully"
+     
      
   
      
