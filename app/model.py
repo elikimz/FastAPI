@@ -10,7 +10,7 @@ class Post(Base):
     title = Column(String, nullable=False)             # Title of the post
     content = Column(Text, nullable=False)             # Content of the post
     published = Column(Boolean, default=True)          # Publication status
-    created_at = Column(DateTime, default=func.now())  # Auto timestamp
+    created_at = Column(DateTime , default=func.now())  # Auto timestamp
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())  # Updated timestamp
     
     # Foreign key for relationship with User
