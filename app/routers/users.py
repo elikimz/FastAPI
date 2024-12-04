@@ -33,4 +33,3 @@ def get_user(id:int,db:Session=Depends(get_db),user_id:int=Depends(auth2.get_cur
     if user==None:
          raise HTTPException(status_code=404,detail= f"user with id {id} is not found")
     return user
-    return user
